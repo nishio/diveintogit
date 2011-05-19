@@ -45,7 +45,11 @@ try:
 except:
     old = dict(HEAD=None, index=set(), branches=set(), tags=set(), objs=set())
 
-new["HEAD"] = r.head.object.hexsha
+try:
+    deref_head = r.head.object.hexsha
+except ValueError:
+    deref_head = None
+new["HEAD"] = (open(".git/HEAD").read().strip(), deref_head)
 new["index"] = set()
 
 index = r.index.entries
