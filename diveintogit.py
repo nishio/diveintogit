@@ -40,7 +40,10 @@ def print_diff(k):
 
 r = git.Repo(".")
 new = {}
-old = pickle.load(file("data"))
+try:
+    old = pickle.load(file("data"))
+except:
+    old = dict(HEAD=None, index=set(), branches=set(), tags=set(), objs=set())
 
 new["HEAD"] = r.head.object.hexsha
 new["index"] = set()
