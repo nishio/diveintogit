@@ -1,16 +1,24 @@
+#!/usr/bin/env python
+
 import git
 import gitdb
-
-from optparse import OptionParser
 import pickle
+from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option("-d", "--diff", help="differential mode",
                   action="store_true", dest="diff", default=False)
 parser.add_option("-v", "--verbose", help="print object's contents",
                   action="store_true", dest="verbose", default=False)
+parser.add_option("-f", "--full_hash", help="print full(not shortened) hash",
+                  action="store_true", dest="fullhash", default=False)
 (options, args) = parser.parse_args()
 
+def shorten_hash(x):
+    h = x[0]
+    if not options.fullhash:
+        h = h[:4]
+    return tuple([h] + list(x)[1:])
 
 def print_content(k):
     sha = gitdb.util.to_bin_sha(k)
@@ -33,10 +41,10 @@ def print_diff(k):
         print "%s:" % k
         if plus:
             for x in plus:
-                print "  +:", x
+                print "  +:", shorten_hash(x)
         if minus:
             for x in minus:
-                print "  -:", x
+                print "  -:", shorten_hash(x)
 
 r = git.Repo(".")
 new = {}
@@ -71,16 +79,14 @@ if options.diff:
         print "HEAD: changed\n  from: %s\n  to:   %s" % (
             old["HEAD"], new["HEAD"])
 
-    print_diff("branches")
-    print_diff("tags")
-    print_diff("objs")
-    print_diff("index")
+    for t in "branches tags index objs".split():
+        print_diff(t)
 else:
     print "HEAD:", new["HEAD"]
     for t in "branches tags index objs".split():
         print "%s:" % t
         for k in new[t]:
-            print " ", k
+            print " ", shorten_hash(k)
             if t == "objs" and options.verbose:
                 print_content(k[0])
                 
