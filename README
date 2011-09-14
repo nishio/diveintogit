@@ -1,0 +1,50 @@
+
+* INSTALL
+mkdir <your playground>
+cd <your playground>
+git clone <dive into git repos>
+chmod +x diveintogit/diveintogit.py
+ln -s diveintogit/diveintogit.py dive
+
+* USAGE SAMPLES
+$ mkdir alice
+$ cd alice/
+
+alice$ git init
+Initialized empty Git repository in /.../alice/.git/
+
+alice$ ../dive
+HEAD: ('ref: refs/heads/master', None)
+branches:
+tags:
+index:
+objs:
+
+alice$ touch README
+alice$ git add README 
+
+alice$ ../dive
+HEAD: ('ref: refs/heads/master', None)
+branches:
+tags:
+index:
+  ('e69d', 'README', 6, 0)
+objs:
+  ('e69d', 'blob')
+
+alice$ git commit -m "1"
+[master (root-commit) 554aed8] 1
+ 0 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 README
+
+alice$ ../dive -d
+HEAD: changed
+  from: ('ref: refs/heads/master', None)
+  to:   ('ref: refs/heads/master', '554aed8a99f0e61ec133900652021dfabb7d472b')
+branches:
+  +: ('554a', 'master')
+tags: no change
+index: no change
+objs:
+  +: ('554a', 'commit')
+  +: ('543b', 'tree')
