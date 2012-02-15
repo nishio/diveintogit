@@ -12,6 +12,9 @@ parser.add_option("-v", "--verbose", help="print object's contents",
                   action="store_true", dest="verbose", default=False)
 parser.add_option("-f", "--full_hash", help="print full(not shortened) hash",
                   action="store_true", dest="fullhash", default=False)
+parser.add_option("-s", "--show", help="show particular object's detail",
+                  action="store", dest="show_target")
+
 (options, args) = parser.parse_args()
 
 def shorten_hash(x):
