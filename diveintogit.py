@@ -56,13 +56,13 @@ for k in r.odb.sha_iter():
     sha, typ, size = r.odb.info(k)
     new["objs"].add((git.to_hex_sha(sha), typ))
 
-
-print "HEAD:", new["HEAD"]
-for t in "branches tags index objs".split():
-    print "%s:" % t
-    for k in new[t]:
-        print " ", shorten_hash(k)
-        if t == "objs" and options.verbose:
-            print_content(k[0])
+def print_full():
+    print "HEAD:", new["HEAD"]
+    for t in "branches tags index objs".split():
+        print "%s:" % t
+        for k in new[t]:
+            print " ", shorten_hash(k)
+            if t == "objs" and options.verbose:
+                print_content(k[0])
                 
 
