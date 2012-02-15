@@ -2,12 +2,9 @@
 
 import git
 import gitdb
-import pickle
 from optparse import OptionParser
 
 parser = OptionParser()
-parser.add_option("-d", "--diff", help="differential mode",
-                  action="store_true", dest="diff", default=False)
 parser.add_option("-v", "--verbose", help="print object's contents",
                   action="store_true", dest="verbose", default=False)
 parser.add_option("-f", "--full_hash", help="print full(not shortened) hash",
@@ -51,10 +48,6 @@ def print_diff(k):
 
 r = git.Repo(".")
 new = {}
-try:
-    old = pickle.load(file("data"))
-except:
-    old = dict(HEAD=None, index=set(), branches=set(), tags=set(), objs=set())
 
 try:
     deref_head = r.head.object.hexsha
@@ -77,7 +70,7 @@ for k in r.odb.sha_iter():
     new["objs"].add((git.to_hex_sha(sha), typ))
 
 
-if options.diff:
+if False:
     if old["HEAD"] != new["HEAD"]:
         print "HEAD: changed\n  from: %s\n  to:   %s" % (
             old["HEAD"], new["HEAD"])
@@ -94,5 +87,3 @@ else:
                 print_content(k[0])
                 
 
-
-pickle.dump(new, file("data", "wb"))
