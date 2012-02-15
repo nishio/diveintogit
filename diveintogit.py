@@ -4,21 +4,12 @@ import git
 import gitdb
 from optparse import OptionParser
 
-parser = OptionParser()
-parser.add_option("-v", "--verbose", help="print object's contents",
-                  action="store_true", dest="verbose", default=False)
-parser.add_option("-f", "--full_hash", help="print full(not shortened) hash",
-                  action="store_true", dest="fullhash", default=False)
-parser.add_option("-s", "--show", help="show particular object's detail",
-                  action="store", dest="show_target")
-
-(options, args) = parser.parse_args()
-
 def shorten_hash(x):
     h = x[0]
     if not options.fullhash:
         h = h[:4]
     return tuple([h] + list(x)[1:])
+
 
 def print_content(k):
     sha = gitdb.util.to_bin_sha(k)
@@ -31,6 +22,28 @@ def print_content(k):
         print 
     except:
         print repr(content)
+
+
+def print_full():
+    print "HEAD:", new["HEAD"]
+    for t in "branches tags index objs".split():
+        print "%s:" % t
+        for k in new[t]:
+            print " ", shorten_hash(k)
+            if t == "objs" and options.verbose:
+                print_content(k[0])
+
+
+
+parser = OptionParser()
+parser.add_option("-v", "--verbose", help="print object's contents",
+                  action="store_true", dest="verbose", default=False)
+parser.add_option("-f", "--full_hash", help="print full(not shortened) hash",
+                  action="store_true", dest="fullhash", default=False)
+parser.add_option("-s", "--show", help="show particular object's detail",
+                  action="store", dest="show_target")
+
+(options, args) = parser.parse_args()
 
 
 r = git.Repo(".")
@@ -55,15 +68,6 @@ new["objs"] = set()
 for k in r.odb.sha_iter():
     sha, typ, size = r.odb.info(k)
     new["objs"].add((git.to_hex_sha(sha), typ))
-
-def print_full():
-    print "HEAD:", new["HEAD"]
-    for t in "branches tags index objs".split():
-        print "%s:" % t
-        for k in new[t]:
-            print " ", shorten_hash(k)
-            if t == "objs" and options.verbose:
-                print_content(k[0])
                 
 
 if options.show_target:
