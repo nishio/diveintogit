@@ -32,19 +32,6 @@ def print_content(k):
     except:
         print repr(content)
 
-def print_diff(k):
-    plus = new[k] - old[k]
-    minus = old[k] - new[k]
-    if not plus and not minus:
-        print "%s: no change" % k
-    else:
-        print "%s:" % k
-        if plus:
-            for x in plus:
-                print "  +:", shorten_hash(x)
-        if minus:
-            for x in minus:
-                print "  -:", shorten_hash(x)
 
 r = git.Repo(".")
 new = {}
@@ -70,20 +57,12 @@ for k in r.odb.sha_iter():
     new["objs"].add((git.to_hex_sha(sha), typ))
 
 
-if False:
-    if old["HEAD"] != new["HEAD"]:
-        print "HEAD: changed\n  from: %s\n  to:   %s" % (
-            old["HEAD"], new["HEAD"])
-
-    for t in "branches tags index objs".split():
-        print_diff(t)
-else:
-    print "HEAD:", new["HEAD"]
-    for t in "branches tags index objs".split():
-        print "%s:" % t
-        for k in new[t]:
-            print " ", shorten_hash(k)
-            if t == "objs" and options.verbose:
-                print_content(k[0])
+print "HEAD:", new["HEAD"]
+for t in "branches tags index objs".split():
+    print "%s:" % t
+    for k in new[t]:
+        print " ", shorten_hash(k)
+        if t == "objs" and options.verbose:
+            print_content(k[0])
                 
 
