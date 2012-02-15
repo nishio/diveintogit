@@ -66,3 +66,24 @@ def print_full():
                 print_content(k[0])
                 
 
+if options.show_target:
+    target = [(sha, typ) for sha, typ in new["objs"] if sha.startswith(options.show_target)]
+    for (k, typ) in target:
+        sha = gitdb.util.to_bin_sha(k)
+        content = r.odb.stream(sha).read()
+
+        print "=" * 10
+        print typ, k
+        print "---contents---"
+        try:
+            s = content.decode("utf-8")
+            # if it succeeded, it may readable text
+            print s
+        except:
+            print content.decode("latin-1").encode("ascii", "replace")
+
+        print "=" * 10
+        print
+
+else:
+    print_full()
